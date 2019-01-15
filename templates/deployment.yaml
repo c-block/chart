@@ -1,0 +1,84 @@
+{{ range (until (.Values.chain.nodes | int)) }}
+{{- $nodeIndex := . }}
+{{- $nodeNumber := printf "%03d" . }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "jbok.fullname" $ }}-{{ $nodeNumber }}
+  labels:
+    app: {{ template "jbok.name" $ }}
+    chart: {{ template "jbok.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    nodeNumber: {{ $nodeNumber | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "jbok.name" $ }}
+      release: {{ $.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "jbok.name" $ }}
+        release: {{ $.Release.Name }}
+    spec:
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "jbok.name" $ }}-config
+      - name: keystore
+        configMap:
+          name: {{ template "jbok.name" $ }}-keystore
+      - name: jbok
+      {{- if $.Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "jbok.fullname" $ }}-{{ $nodeNumber }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      initContainers:
+      - name: init-config
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: 
+        - "sh"
+        - "-xc"
+        - "cp -r /root/.jbokconfig/{{ $.Values.jbok.identity }} /root/.jbok/{{ $.Values.jbok.identity }}"
+        volumeMounts:
+        - name: jbok
+          mountPath: /root/.jbok
+          readOnly: false
+        - name: config
+          mountPath: /root/.jbokconfig/{{ $.Values.jbok.identity }}
+        - name: keystore
+          mountPath: /root/.jbokconfig/{{ $.Values.jbok.identity }}/keystore
+      containers:
+      - name: jbok-node
+        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        volumeMounts:
+        - name: jbok
+          mountPath: /root/.jbok
+          readOnly: false
+        args: ["node", "/root/.jbok/{{ $.Values.jbok.identity }}/app.json"]
+        ports:
+        - name: rpc
+          containerPort: 20002
+        - name: discovery
+          containerPort: 20001
+          protocol: UDP
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with $.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

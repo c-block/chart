@@ -1,0 +1,103 @@
+apiVersion: v1
+data:
+  app.json: |-
+    {
+      "identity" : "{{ .Values.jbok.identity }}",
+      "logLevel" : "DEBUG",
+      "genesisConfig" : null,
+      "history" : {
+        "dbBackend" : "leveldb",
+        "frontierBlockNumber" : "0",
+        "homesteadBlockNumber" : "0",
+        "tangerineWhistleBlockNumber" : "0",
+        "spuriousDragonBlockNumber" : "0",
+        "byzantiumBlockNumber" : "0",
+        "constantinopleBlockNumber" : "1000000000000000000000",
+        "difficultyBombPauseBlockNumber" : "3000000",
+        "difficultyBombContinueBlockNumber" : "5000000"
+      },
+      "keystore" : {
+        "dbBackend" : "file"
+      },
+      "peer" : {
+        "port" : 20000,
+        "host" : "localhost",
+        "nodekey" : null,
+        "enableDiscovery" : false,
+        "discoveryPort" : 20001,
+        "dbBackend" : "leveldb",
+        "bootUris" : [
+        ],
+        "updatePeersInterval" : "10seconds",
+        "maxOutgoingPeers" : 10,
+        "maxIncomingPeers" : 10,
+        "maxPendingPeers" : 10,
+        "handshakeTimeout" : "10seconds",
+        "timeout" : "10seconds"
+      },
+      "sync" : {
+        "maxConcurrentRequests" : 50,
+        "maxBlockHeadersPerRequest" : 128,
+        "maxBlockBodiesPerRequest" : 128,
+        "maxReceiptsPerRequest" : 60,
+        "maxNodesPerRequest" : 200,
+        "minPeersToChooseTargetBlock" : 2,
+        "minBroadcastPeers" : 4,
+        "fullSyncOffset" : 10,
+        "fastSyncOffset" : 64,
+        "fastEnabled" : false,
+        "retryInterval" : "15seconds",
+        "checkForNewBlockInterval" : "5seconds",
+        "banDuration" : "200seconds",
+        "requestTimeout" : "10seconds"
+      },
+      "txPool" : {
+        "poolSize" : 4096,
+        "transactionTimeout" : "10minutes"
+      },
+      "mining" : {
+        "enabled" : true,
+        "ommersPoolSize" : 30,
+        "blockCacheSize" : 30,
+        "minerKeyPair" : null,
+        "minerAddress" : "c65cc981b0a70758cd0697634dca79e36c0f8005",
+        "coinbase" : "0000000000000000000000000000000000000042",
+        "extraData" : "",
+        "mineRounds" : 100000,
+        "period" : "5seconds",
+        "epoch" : "30000",
+        "checkpointInterval" : 1024
+      },
+      "rpc" : {
+        "enabled" : true,
+        "host" : "0.0.0.0",
+        "port" : 20002,
+        "apis" : "public,admin,personal"
+      },
+      "consensusAlgo" : "clique"
+    }
+  genesis.json: |-
+    {
+      "nonce" : "42",
+      "difficulty" : "1024",
+      "extraData" : "dbd594c65cc981b0a70758cd0697634dca79e36c0f8005c380808000",
+      "gasLimit" : "16716680",
+      "coinbase" : "0000000000000000000000000000000000000000",
+      "alloc" : {
+        "0xc65cc981b0a70758cd0697634dca79e36c0f8005" : "1000000000000000",
+        "0x46d478f46aa693f7840f01d16af58125c7760884" : "1000000000000000",
+        "0x150db79d4b39a1d2b4cc1920c3cf118fe744a3d3" : "1000000000000000",
+        "0x1639d3fd3cd6dad6e3bed4990b53177a30e94b22" : "1000000000000000"
+      },
+      "chainId" : "1",
+      "timestamp" : 1547088968487
+    }
+  nodekey: db351b3bc40647d2005c478f0c534f961f4daed12372d1c5f703ebbd44f2ea9b
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2019-01-10T03:03:36Z
+  name: {{ template "jbok.name" . }}-config
+  namespace: default
+  resourceVersion: "182116"
+  selfLink: /api/v1/namespaces/default/configmaps/{{ template "jbok.name" . }}-config
+  uid: 52467e28-1484-11e9-8307-025000000001
