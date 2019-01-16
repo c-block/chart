@@ -7,23 +7,99 @@ image:
   tag: 0.0.1-SNAPSHOT
   pullPolicy: IfNotPresent
 
-service:
-  type: LoadBalancer
-
 nodeSelector: {}
 
 chain:
-  nodes: 1
-
+  nodes: 2
+  nodeInfos: 
+    node_0:
+      nodekey: db351b3bc40647d2005c478f0c534f961f4daed12372d1c5f703ebbd44f2ea9b
+      miner: c65cc981b0a70758cd0697634dca79e36c0f8005
+      keystore: |-
+        {
+          "id" : "bd8f84b7-b17d-417d-bca3-b5686f23b7a1",
+          "address" : "c65cc981b0a70758cd0697634dca79e36c0f8005",
+          "crypto" : {
+            "cipher" : "aes-128-ctr",
+            "ciphertext" : "fd5abd25040b68f28163cfc585b751a11d3ded3d9e59f509e1af556679f6e83b",
+            "cipherparams" : {
+              "iv" : "45f2f8c7195519c4a14fd4fdbfa2aa92"
+            },
+            "kdf" : "scrypt",
+            "kdfparams" : {
+              "salt" : "65d39fb49677435ba595a9f8dd1473a0f36f7fcf8ac3857f110c093138aeecb7",
+              "n" : 262144,
+              "r" : 8,
+              "p" : 1,
+              "dklen" : 32
+            },
+            "mac" : "da49e7421d25e759332dad5f3a0766f55f84ff623818a5cb60a29ec59e86653b"
+          },
+          "version" : 3
+        }
+    node_1:
+      nodekey: 55cf461697b49309713ea7232653dd2e4b094b100ee9d68d9f6dcc032e0bcab4
+      miner: 46d478f46aa693f7840f01d16af58125c7760884
+      keystore: |-
+        {
+          "id" : "3f9e0fca-f0b4-4e6e-80ab-51ba4a34afe7",
+          "address" : "46d478f46aa693f7840f01d16af58125c7760884",
+          "crypto" : {
+            "cipher" : "aes-128-ctr",
+            "ciphertext" : "d53aa51d3473ffb567936f12be0e297a6c751514e3d05454f3a3a6c61547eb72",
+            "cipherparams" : {
+              "iv" : "95f7d625b846ec9e9adfa9ba0132b840"
+            },
+            "kdf" : "scrypt",
+            "kdfparams" : {
+              "salt" : "17ef6b7c24b4bdbd0423e7983d425206c8e140c256384cb42d1d9ac79c2395af",
+              "n" : 262144,
+              "r" : 8,
+              "p" : 1,
+              "dklen" : 32
+            },
+            "mac" : "badffa01c9530c3639e13f5df9829297f6dc05f475b4b89588ecdd2f6f516e74"
+          },
+          "version" : 3
+        }
+    node_2:
+      nodekey: e571bd29ca3c8103071126b4d58533d5d9c991b63c8438e74d471c52b44b0dfd
+      miner: 150db79d4b39a1d2b4cc1920c3cf118fe744a3d3
+      keystore: |-
+        {
+          "id" : "8025bc10-7886-4be1-9c60-8aaa600bb12a",
+          "address" : "150db79d4b39a1d2b4cc1920c3cf118fe744a3d3",
+          "crypto" : {
+            "cipher" : "aes-128-ctr",
+            "ciphertext" : "467e5c266b5463c0f36e834cb81032da796b8fbd84555e79dd6c45caac5abcd9",
+            "cipherparams" : {
+              "iv" : "b67fe91aa11a48091f63795af6c6ae65"
+            },
+            "kdf" : "scrypt",
+            "kdfparams" : {
+              "salt" : "5e9870669a6450d5e0a1ab9eb8638b3d2146c003019d775483cfbc4206ff0e1a",
+              "n" : 262144,
+              "r" : 8,
+              "p" : 1,
+              "dklen" : 32
+            },
+            "mac" : "f8547e07016dd808a23554b00b8e16724ae0191277bca56ae2ada075840fb7e3"
+          },
+          "version" : 3
+        }
 jbok:
   identity: test
-  node:
-    service:
-      type: LoadBalancer
-  simulation:
-    replicaCount: 1
-    service:
-      type: LoadBalancer
+
+rpc:
+  service: 
+    port: 20002
+    type: NodePort
+    loadBalance: true
+
+peer:
+  service:
+    type: ClusterIP
+    port: 20000
 
 persistence:
   enabled: true

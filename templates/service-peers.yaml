@@ -1,18 +1,24 @@
 {{ range (until (.Values.chain.nodes | int)) }}
 {{- $nodeNumber := printf "%03d" . }}
-{{- $nodeIndex := . }}
 ---
 apiVersion: v1
-data:
-  {{ (index $.Values.chain.nodeInfos ( printf "node_%d" $nodeIndex )).miner }}: {{ (index $.Values.chain.nodeInfos ( printf "node_%d" $nodeIndex )).keystore | toJson }}
-kind: ConfigMap
+kind: Service
 metadata:
-  name: {{ template "jbok.name" $ }}-keystore-{{ $nodeNumber }}
-  namespace: default
+  name: {{ template "jbok.fullname" $ }}-{{ $nodeNumber }}
   labels:
     app: {{ template "jbok.name" $ }}
     chart: {{ template "jbok.chart" $ }}
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
+spec:
+  type: {{ $.Values.peer.service.type }}
+  ports:
+    - name: peer
+      port: {{ $.Values.peer.service.port }}
+      targetPort: peer
+      protocol: TCP
+  selector:
+    app: {{ template "jbok.name" $ }}
+    release: {{ $.Release.Name }}
     nodeNumber: {{ $nodeNumber | quote }}
 {{- end }}

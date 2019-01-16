@@ -1,8 +1,12 @@
+{{ range (until (.Values.chain.nodes | int)) }}
+{{- $nodeNumber := printf "%03d" . }}
+{{- $nodeIndex := . }}
+---
 apiVersion: v1
 data:
   app.json: |-
     {
-      "identity" : "{{ .Values.jbok.identity }}",
+      "identity" : "{{ $.Values.jbok.identity }}-{{ $nodeNumber }}",
       "logLevel" : "DEBUG",
       "genesisConfig" : null,
       "history" : {
@@ -27,6 +31,7 @@ data:
         "discoveryPort" : 20001,
         "dbBackend" : "leveldb",
         "bootUris" : [
+          "jbok://e6613fca33507e5182c1e736016360f838121fdde566ecd60cc01f51a860a559027a4c85e28a022c0b5dc2125953ab6b50729e47dd9ffb5851b6682a73bae350@localhost:20000"
         ],
         "updatePeersInterval" : "10seconds",
         "maxOutgoingPeers" : 10,
@@ -60,7 +65,7 @@ data:
         "ommersPoolSize" : 30,
         "blockCacheSize" : 30,
         "minerKeyPair" : null,
-        "minerAddress" : "c65cc981b0a70758cd0697634dca79e36c0f8005",
+        "minerAddress" : {{ (index $.Values.chain.nodeInfos ( printf "node_%d" $nodeIndex )).miner | quote }},
         "coinbase" : "0000000000000000000000000000000000000042",
         "extraData" : "",
         "mineRounds" : 100000,
@@ -92,12 +97,15 @@ data:
       "chainId" : "1",
       "timestamp" : 1547088968487
     }
-  nodekey: db351b3bc40647d2005c478f0c534f961f4daed12372d1c5f703ebbd44f2ea9b
+  nodekey: {{ (index $.Values.chain.nodeInfos ( printf "node_%d" $nodeIndex )).nodekey | quote }}
 kind: ConfigMap
 metadata:
-  creationTimestamp: 2019-01-10T03:03:36Z
-  name: {{ template "jbok.name" . }}-config
+  name: {{ template "jbok.name" $ }}-config-{{ $nodeNumber }}
   namespace: default
-  resourceVersion: "182116"
-  selfLink: /api/v1/namespaces/default/configmaps/{{ template "jbok.name" . }}-config
-  uid: 52467e28-1484-11e9-8307-025000000001
+  labels:
+    app: {{ template "jbok.name" $ }}
+    chart: {{ template "jbok.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    nodeNumber: {{ $nodeNumber | quote }}
+{{- end }}

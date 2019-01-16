@@ -1,6 +1,6 @@
 {{ range (until (.Values.chain.nodes | int)) }}
-{{- $nodeIndex := . }}
 {{- $nodeNumber := printf "%03d" . }}
+{{- $nodeIndex := . }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,14 +27,14 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "jbok.name" $ }}-config
+          name: {{ template "jbok.name" $ }}-config-{{ $nodeNumber }}
       - name: keystore
         configMap:
-          name: {{ template "jbok.name" $ }}-keystore
+          name: {{ template "jbok.name" $ }}-keystore-{{ $nodeNumber }}
       - name: jbok
       {{- if $.Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "jbok.fullname" $ }}-{{ $nodeNumber }}
+          claimName: {{ template "jbok.name" $ }}-pvc-{{ $nodeNumber }}
       {{- else }}
         emptyDir: {}
       {{- end }}
@@ -45,15 +45,16 @@ spec:
         command: 
         - "sh"
         - "-xc"
-        - "cp -r /root/.jbokconfig/{{ $.Values.jbok.identity }} /root/.jbok/{{ $.Values.jbok.identity }}"
+        - |-
+          cp -r /root/.jbokconfig/{{ $.Values.jbok.identity }}-{{ $nodeNumber }} /root/.jbok/{{ $.Values.jbok.identity }}-{{ $nodeNumber }}
         volumeMounts:
         - name: jbok
           mountPath: /root/.jbok
           readOnly: false
         - name: config
-          mountPath: /root/.jbokconfig/{{ $.Values.jbok.identity }}
+          mountPath: /root/.jbokconfig/{{ $.Values.jbok.identity }}-{{ $nodeNumber }}
         - name: keystore
-          mountPath: /root/.jbokconfig/{{ $.Values.jbok.identity }}/keystore
+          mountPath: /root/.jbokconfig/{{ $.Values.jbok.identity }}-{{ $nodeNumber }}/keystore
       containers:
       - name: jbok-node
         image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
@@ -62,7 +63,7 @@ spec:
         - name: jbok
           mountPath: /root/.jbok
           readOnly: false
-        args: ["node", "/root/.jbok/{{ $.Values.jbok.identity }}/app.json"]
+        args: ["node", "/root/.jbok/{{ $.Values.jbok.identity }}-{{ $nodeNumber }}/app.json"]
         ports:
         - name: rpc
           containerPort: 20002

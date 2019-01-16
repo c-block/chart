@@ -5,7 +5,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "jbok.fullname" $ }}-{{ $nodeNumber }}
+  name: {{ template "jbok.name" $ }}-pvc-{{ $nodeNumber }}
   labels:
     app: {{ template "jbok.name" $ }}
     release: {{ $.Release.Name }}
