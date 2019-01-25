@@ -64,6 +64,9 @@ spec:
           mountPath: /root/.jbok
           readOnly: false
         args: ["node", "/root/.jbok/{{ $.Values.jbok.identity }}-{{ $nodeNumber }}/app.json"]
+        env:
+        - name: TZ
+          value: Asia/Shanghai
         ports:
         - name: rpc
           containerPort: 20002

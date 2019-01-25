@@ -8,6 +8,7 @@ data:
     {
       "identity" : "{{ $.Values.jbok.identity }}-{{ $nodeNumber }}",
       "logLevel" : "DEBUG",
+      "logHandler" : "console,file",
       "genesisConfig" : null,
       "history" : {
         "dbBackend" : "leveldb",
@@ -31,13 +32,11 @@ data:
         "discoveryPort" : 20001,
         "dbBackend" : "leveldb",
         "bootUris" : [
-          "jbok://e6613fca33507e5182c1e736016360f838121fdde566ecd60cc01f51a860a559027a4c85e28a022c0b5dc2125953ab6b50729e47dd9ffb5851b6682a73bae350@localhost:20000"
         ],
         "updatePeersInterval" : "10seconds",
         "maxOutgoingPeers" : 10,
         "maxIncomingPeers" : 10,
         "maxPendingPeers" : 10,
-        "handshakeTimeout" : "10seconds",
         "timeout" : "10seconds"
       },
       "sync" : {
@@ -85,17 +84,17 @@ data:
     {
       "nonce" : "42",
       "difficulty" : "1024",
-      "extraData" : "dbd594c65cc981b0a70758cd0697634dca79e36c0f8005c380808000",
+      "extraData" : "dbd594fe262870ba837633276aab97d86f91a057f8e902c380808000",
       "gasLimit" : "16716680",
       "coinbase" : "0000000000000000000000000000000000000000",
       "alloc" : {
-        "0xc65cc981b0a70758cd0697634dca79e36c0f8005" : "1000000000000000",
-        "0x46d478f46aa693f7840f01d16af58125c7760884" : "1000000000000000",
-        "0x150db79d4b39a1d2b4cc1920c3cf118fe744a3d3" : "1000000000000000",
-        "0x1639d3fd3cd6dad6e3bed4990b53177a30e94b22" : "1000000000000000"
+        "0xfe262870ba837633276aab97d86f91a057f8e902" : "10000000000000000000000000000",
+        "0xfe84089b461ec2e5e65578ae56891d7fe990ebac" : "10000000000000000000000000000",
+        "0x41bdeeb5a14f024070b73c4fed6f45f2f62b8499" : "10000000000000000000000000000",
+        "0x2be1cab7edf45970a3d1b4e2106a6ec26af2f08c" : "10000000000000000000000000000"
       },
       "chainId" : "1",
-      "timestamp" : 1547088968487
+      "timestamp" : 1548323258777
     }
   nodekey: {{ (index $.Values.chain.nodeInfos ( printf "node_%d" $nodeIndex )).nodekey | quote }}
 kind: ConfigMap
