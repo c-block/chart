@@ -33,8 +33,9 @@ spec:
           name: {{ template "jbok.name" $ }}-keystore-{{ $nodeNumber }}
       - name: jbok
       {{- if $.Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "jbok.name" $ }}-pvc-{{ $nodeNumber }}
+        hostPath:
+          path: {{ $.Values.persistence.path }}
+          type: DirectoryOrCreate
       {{- else }}
         emptyDir: {}
       {{- end }}

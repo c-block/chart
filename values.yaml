@@ -52,8 +52,5 @@ peer:
     port: 20000
 
 persistence:
-  enabled: false
-  size: 1Gi
-  storageClass: hostpath
-  accessMode: ReadWriteOnce
-  persistentVolumeReclaimPolicy: "Retain"
+  enabled: true
+  path: /root/.jbok
