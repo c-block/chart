@@ -60,6 +60,13 @@ spec:
       - name: jbok-node
         image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1"
+          limits:
+            memory: "2Gi"
+            cpu: "2"
         volumeMounts:
         - name: jbok
           mountPath: /root/.jbok
