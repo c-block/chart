@@ -54,3 +54,11 @@ peer:
 persistence:
   enabled: true
   path: /root/.jbok
+
+resource:
+  memory:
+    request: "1Gi"
+    limit: "2Gi"
+  cpu:
+    request: 1
+    limit: 2

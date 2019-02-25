@@ -62,11 +62,11 @@ spec:
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "1"
+            memory: "{{ $.Values.resource.memory.request }}"
+            cpu: "{{ $.Values.resource.cpu.request }}"
           limits:
-            memory: "2Gi"
-            cpu: "2"
+            memory: "{{ $.Values.resource.memory.limit }}"
+            cpu: "{{ $.Values.resource.cpu.limit }}"
         volumeMounts:
         - name: jbok
           mountPath: /root/.jbok
