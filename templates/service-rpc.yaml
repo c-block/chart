@@ -1,6 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
   labels:
     app: {{ template "jbok.name" . }}
     chart: {{ template "jbok.chart" . }}
